@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f3eadf">
+  <meta name="description" content="唱一句《水调歌头》。让停顿成为字距，让音色长成字形。生成一张只属于此刻的声诗，现场打印，把月亮带回家。">
+  <meta property="og:title" content="问月 WENYUE · 把你的声音写成一轮月亮">
+  <meta property="og:description" content="唱一句《水调歌头》，让停顿成为留白、音色长成字形。生成专属声诗，现场 A4 打印。">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <meta name="format-detection" content="telephone=no">
+  <title>问月 WENYUE · 把你的声音写成一轮月亮</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23211a14'/%3E%3Cpath d='M42 15a20 20 0 1 0 7 35A23 23 0 0 1 42 15Z' fill='%23f3d29f'/%3E%3Ccircle cx='46' cy='44' r='4' fill='%23e75a3c'/%3E%3C/svg%3E">
+  <link rel="preload" href="assets/fonts/noto-serif-sc-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/space-grotesk-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/zcool-qingke.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/zcool-kuaile.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="assets/vendor/qrcode.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="ambient" aria-hidden="true">
+    <span class="ambient-blob ambient-blob--one"></span>
+    <span class="ambient-blob ambient-blob--two"></span>
+    <span class="ambient-blob ambient-blob--three"></span>
+    <span class="ambient-orbit"></span>
+  </div>
+
+  <header class="topbar">
+    <button class="brand" type="button" data-go-home aria-label="回到问月首页">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 44 44" fill="none">
+          <path d="M30.5 9.5a15.2 15.2 0 1 0 5.2 25.8A17.7 17.7 0 0 1 30.5 9.5Z" fill="currentColor"/>
+          <circle cx="32.8" cy="31.8" r="2.8" fill="#e75a3c"/>
+        </svg>
+      </span>
+      <span class="brand-type">
+        <strong>问月</strong>
+        <small>WENYUE · 声诗计划</small>
+      </span>
+    </button>
+
+    <ol class="stage-track" aria-label="体验进度">
+      <li class="is-active" data-track="landing"><span>01</span>起</li>
+      <li data-track="sing"><span>02</span>吟</li>
+      <li data-track="result"><span>03</span>成</li>
+    </ol>
+
+    <div class="top-actions">
+      <button class="top-pill" type="button" id="openQr">
+        <i class="pulse-dot" aria-hidden="true"></i>
+        现场模式
+      </button>
+      <span class="local-clock" id="localClock">LOCAL · --:--</span>
+    </div>
+  </header>
+
+  <main id="app">
+    <!-- 01 / 起 -->
+    <section class="stage stage-landing is-active" id="stageLanding" data-stage="landing">
+      <div class="landing-inner">
+        <div class="hero-copy">
+          <p class="eyebrow reveal-item"><span class="eyebrow-line"></span>声音文创实验室 · VOL. 01</p>
+          <h1 class="hero-title reveal-item">把你的声音，<br>写成一轮<span class="accent">月亮</span><span class="title-period">。</span></h1>
+          <p class="hero-latin reveal-item"><em>Sing the moon into being.</em></p>
+          <p class="hero-desc reveal-item">唱一句《水调歌头》。你的停顿会长成留白，音色会变成字形——一张只属于此刻的声诗。现场打印，带一轮月亮回家。</p>
+          <div class="hero-actions reveal-item">
+            <button class="btn btn-primary" type="button" id="startSing">
+              <span class="btn-mic" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                  <rect x="9" y="3" width="6" height="11" rx="3"/>
+                  <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/>
+                </svg>
+              </span>
+              开始吟唱
+              <span class="btn-arrow" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg>
+              </span>
+            </button>
+            <button class="btn-text" type="button" id="demoResult">先看一份示例 <span aria-hidden="true">↗</span></button>
+          </div>
+          <div class="hero-meta reveal-item">
+            <span><i></i>约 30 秒</span>
+            <span>需麦克风权限</span>
+            <span>声音仅在本机处理</span>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal-item">
+          <div class="scene-card">
+            <canvas id="landingMoon" aria-hidden="true"></canvas>
+            <div class="scene-top">
+              <span class="live-chip"><i></i>LIVE SOUNDSCAPE</span>
+              <span class="scene-no">NO. 001 / 二〇二六</span>
+            </div>
+            <div class="orbit-copy" aria-hidden="true">
+              <svg viewBox="0 0 400 400">
+                <defs>
+                  <path id="orbitPath" d="M 200,200 m -146,0 a 146,146 0 1,1 292,0 a 146,146 0 1,1 -292,0"/>
+                </defs>
+                <text>
+                  <textPath href="#orbitPath" startOffset="0%">THE MOON IN YOUR VOICE · 声 诗 计 划 · MOONLIT ARCHIVE · </textPath>
+                </text>
+              </svg>
+            </div>
+            <div class="scene-specimen">
+              <div class="specimen-head">
+                <span>你的声诗 · 试听样张</span>
+                <span>WENYUE</span>
+              </div>
+              <p class="specimen-poem">
+                <span class="s-sharp">明月</span><span class="s-round">几时</span><span class="s-sharp">有</span><span class="s-punct">，</span><br>
+                <span class="s-round">把酒</span><span class="s-sharp">问青天</span><span class="s-punct">。</span>
+              </p>
+              <div class="specimen-foot">
+                <span>锐度 68</span>
+                <span>留白 0.6″</span>
+                <span>NO. WY-0921</span>
+              </div>
+              <span class="specimen-seal" aria-hidden="true">声诗</span>
+            </div>
+            <div class="scene-caption">
+              <span>明月照地</span>
+              <span>频谱 · 实时生成</span>
+            </div>
+          </div>
+          <p class="visual-note"><span aria-hidden="true">◌</span> 每一张，都由这一刻的声音决定。</p>
+        </div>
+      </div>
+
+      <div class="landing-foot">
+        <span>苏轼 · 水调歌头</span>
+        <span class="scroll-cue"><i></i>听月光落下</span>
+        <span class="landing-edition">LIMITED SOUND EDITION</span>
+      </div>
+    </section>
+
+    <!-- 02 / 吟 -->
+    <section class="stage stage-sing" id="stageSing" data-stage="sing">
+      <div class="sing-inner">
+        <div class="sing-head">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-line"></span>LIVE CAPTURE · 正在采集</p>
+            <h2 class="section-title">把此刻的声线，<br>落进这首词里。</h2>
+          </div>
+          <div class="sing-guide">
+            <span class="guide-no">HOW TO SING / 吟唱方式</span>
+            <p>靠近麦克风，随高亮逐字轻唱。<br>在句间停顿，让月光在字里停一停。</p>
+            <div class="guide-steps">
+              <span><b>01</b>逐字轻唱</span>
+              <span><b>02</b>句间停顿</span>
+              <span><b>03</b>生成声诗</span>
+            </div>
+            <div class="guide-map" aria-label="声音映射规则">
+              <span>停顿 <i>→</i> 字距</span>
+              <span>音色 <i>→</i> 字形</span>
+              <span>情绪 <i>→</i> 月色</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sing-grid">
+          <div class="preview-column">
+            <div class="preview-meta">
+              <span><i class="record-dot"></i>LIVE PREVIEW / 实时显影</span>
+              <span id="liveStatus" role="status" aria-live="polite">等待你的第一声</span>
+            </div>
+            <div class="preview-frame">
+              <div class="live-artboard-host" id="liveArtboardHost"></div>
+              <div class="preview-timer">
+                <small>REC</small>
+                <span id="recordTimer">00:00</span>
+              </div>
+            </div>
+            <p class="preview-tip">轻点诗页，也可以手动落下一字</p>
+          </div>
+
+          <aside class="console" aria-label="声音采集面板">
+            <section class="panel panel-dark live-panel">
+              <div class="panel-head">
+                <span>声纹采集</span>
+                <span class="panel-status" id="listenLabel"><i></i>CONNECTING</span>
+              </div>
+              <canvas class="wave-canvas" id="waveCanvas" aria-hidden="true"></canvas>
+              <div class="meters">
+                <div class="meter">
+                  <div class="meter-label"><span>音色锐度</span><strong><span id="sharpVal">—</span><small>/ 100</small></strong></div>
+                  <div class="meter-track"><i id="sharpBar"></i><b class="meter-marker"></b></div>
+                </div>
+                <div class="meter">
+                  <div class="meter-label"><span>情绪温度</span><strong><span id="heatVal">—</span><small>°</small></strong></div>
+                  <div class="meter-track meter-track--warm"><i id="heatBar"></i></div>
+                </div>
+              </div>
+              <div class="live-stats">
+                <div><span>留白</span><strong id="pauseVal">0.0<small>″</small></strong></div>
+                <div><span>已入词</span><strong id="charVal">0<small>/ 21</small></strong></div>
+                <div><span>呼吸</span><strong id="bpmVal">—<small>BPM</small></strong></div>
+              </div>
+              <div class="panel-caption"><span>声音特征实时映射</span><span>ON-DEVICE ONLY</span></div>
+            </section>
+
+            <section class="panel panel-dark scene-panel">
+              <div class="panel-head">
+                <span>声景 · 明月照地</span>
+                <span class="panel-en">SOUNDSCAPE</span>
+              </div>
+              <div class="moon-scene">
+                <canvas id="singMoon" aria-hidden="true"></canvas>
+                <div class="scene-hud">
+                  <span id="moonMood">等待月色</span>
+                  <span id="moonRhythm">— BPM</span>
+                </div>
+              </div>
+            </section>
+
+            <div class="sing-actions">
+              <button class="btn btn-primary btn-finish" type="button" id="finishSing" disabled>
+                <span class="btn-label">完成吟唱 · 生成声诗</span>
+                <span class="btn-arrow" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg>
+                </span>
+              </button>
+              <button class="btn-reset" type="button" id="resetSing" aria-label="重新吟唱">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>
+              </button>
+            </div>
+            <p class="privacy-note"><span aria-hidden="true">◌</span>声音不会上传，只在本机转化为一段视觉记忆。</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 / 成 -->
+    <section class="stage stage-result" id="stageResult" data-stage="result">
+      <div class="result-inner">
+        <div class="result-heading">
+          <p class="eyebrow"><span class="eyebrow-line"></span>YOUR SOUND, IN PRINT · 声诗已成</p>
+          <h2 class="section-title result-title">月光，<em>已落款</em>。</h2>
+          <p class="result-desc">停顿是留白，音色是骨架。这张纸，只属于你刚刚的三十秒。</p>
+        </div>
+
+        <div class="result-grid">
+          <div class="result-preview-column">
+            <div class="preview-meta result-meta">
+              <span>你的专属声诗 · A4 限印</span>
+              <span id="resultSerial">NO. WY-000000-0000</span>
+            </div>
+            <div class="result-sheet-wrap">
+              <div class="sheet-ghost sheet-ghost--one" aria-hidden="true"></div>
+              <div class="sheet-ghost sheet-ghost--two" aria-hidden="true"></div>
+              <div class="result-artboard-host" id="resultArtboardHost"></div>
+            </div>
+            <div class="print-actions">
+              <button class="btn btn-primary" type="button" id="printBtn">
+                打印这张声诗
+                <span class="btn-arrow" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 12 4M5.5 4H12v6.5"/></svg>
+                </span>
+              </button>
+              <button class="btn btn-outline" type="button" id="againBtn">再唱一次</button>
+              <button class="btn-square" type="button" id="resultQr" aria-label="生成现场二维码">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                  <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM15 15h5M15 19h5M19 13v2"/>
+                </svg>
+              </button>
+            </div>
+            <p class="print-hint">A4 · 100% · 开启背景图形并关闭页眉页脚，保留纸张的呼吸感。</p>
+          </div>
+
+          <aside class="result-side">
+            <section class="panel panel-dark replay-panel">
+              <div class="panel-head">
+                <span>声景回放</span>
+                <span class="panel-en">SILENT REPLAY</span>
+              </div>
+              <div class="result-moon-scene">
+                <canvas id="resultMoon" aria-hidden="true"></canvas>
+                <div class="scene-hud">
+                  <span id="replayMood">月色微醺</span>
+                  <span>按你的声纹重播</span>
+                </div>
+              </div>
+              <div class="replay-meta"><span><i></i>月光仍在动</span><span>WITHOUT SOUND</span></div>
+            </section>
+
+            <section class="reading-panel">
+              <div class="reading-head">
+                <span class="panel-en">VOICE READING</span>
+                <span class="reading-index">声纹解构 / 03</span>
+              </div>
+              <p class="reading-quote" id="readingQuote">柔软处生月，锋利处见光。</p>
+              <p class="reading-body" id="readingBody"></p>
+              <div class="metric-strip">
+                <div><span>音色锐度</span><strong id="rSharp">—</strong><small>SHARPNESS</small></div>
+                <div><span>最长留白</span><strong id="rPause">—</strong><small>PAUSE</small></div>
+                <div><span>情绪温度</span><strong id="rHeat">—</strong><small>WARMTH</small></div>
+                <div><span>呼吸节奏</span><strong id="rBpm">—</strong><small>RHYTHM</small></div>
+              </div>
+            </section>
+
+            <section class="edition-note">
+              <span class="seal-small" aria-hidden="true">声诗</span>
+              <p>每一张声诗都由即时声纹生成，<br>不可复制，也不可重来。</p>
+              <span class="edition-no" id="resultEdition">NO. WY-000000-0000</span>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="print-stage" id="printStage" aria-hidden="true"></div>
+
+  <div class="modal" id="qrModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card qr-modal-card" role="dialog" aria-modal="true" aria-labelledby="qrTitle">
+      <button class="modal-close" type="button" data-close-modal aria-label="关闭">✕</button>
+      <p class="eyebrow"><span class="eyebrow-line"></span>ON-SITE MODE · 现场模式</p>
+      <h3 id="qrTitle">把这轮月亮，<br>递给下一位。</h3>
+      <div class="qr-layout">
+        <div class="qr-frame"><div class="qr-box" id="qrBox"></div></div>
+        <div class="qr-content">
+          <p>扫码进入，现场吟唱，生成并打印属于你的声诗。</p>
+          <div class="qr-url" id="qrUrl">—</div>
+          <button class="btn btn-outline btn-copy" type="button" id="copyUrl">复制链接</button>
+          <p class="qr-note" id="qrHint">扫码即启，建议使用手机浏览器打开。</p>
+        </div>
+      </div>
+      <div class="modal-foot"><span>问月 WENYUE</span><span>声音文创 · 即时印制</span></div>
+    </div>
+  </div>
+
+  <div class="modal" id="micModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card mic-modal-card" role="dialog" aria-modal="true" aria-labelledby="micTitle">
+      <button class="modal-close" type="button" data-close-modal aria-label="关闭">✕</button>
+      <div class="mic-emblem" aria-hidden="true">
+        <span class="mic-emblem-ring"></span>
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+          <rect x="18" y="8" width="12" height="22" rx="6"/>
+          <path d="M11 23a13 13 0 0 0 26 0M24 36v5M17 41h14"/>
+        </svg>
+      </div>
+      <p class="eyebrow"><span class="eyebrow-line"></span>MICROPHONE ACCESS</p>
+      <h3 id="micTitle">想听见你的声音。</h3>
+      <p class="mic-desc">请允许浏览器访问麦克风。我们只在本机提取停顿与音色，不录音、不上传、不留存。</p>
+      <p class="mic-error" id="micError"></p>
+      <div class="mic-actions">
+        <button class="btn btn-primary" type="button" id="retryMic">重新授权</button>
+        <button class="btn btn-outline" type="button" id="useDemoMic">先用示例声纹</button>
+      </div>
+      <p class="mic-tip">若浏览器已拒绝权限，请在地址栏的站点设置中重新开启麦克风。</p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
